@@ -42,3 +42,7 @@
 @import url(../blocks/form/__error/form__error.css);
 @import url(../blocks/form/__error/_visibility/form__error_visible.css);
 @import url(../blocks/popup/__close/popup__close.css);
+
+body {
+    background-color: #000;
+}
