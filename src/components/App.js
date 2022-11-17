@@ -71,6 +71,7 @@ function App() {
         onCardClick={handleCardClick}
       />
       <PopupWithForm
+        formName='delete-form'
         name="confirm-delete"
         title="Вы уверены?"
         buttonText={'Да'}
@@ -78,6 +79,7 @@ function App() {
       />
       <PopupWithForm
         name="user"
+        formName='user-form'
         title="Редактировать профиль"
         buttonText={'Сохранить'}
         isOpen={isEditProfilePopupOpen}
@@ -107,6 +109,7 @@ function App() {
         <span className="form__error form__error_type_info"></span>
       </PopupWithForm>
       <PopupWithForm
+        formName='card-form'
         name="card"
         title="Новое место"
         buttonText={'Создать'}
@@ -135,6 +138,7 @@ function App() {
         <span className="form__error form__error_type_link"></span>
       </PopupWithForm>
       <PopupWithForm
+        formName='avatar-form'
         name="edit-avatar"
         title="Обновить аватар"
         buttonText={'Сохранить'}

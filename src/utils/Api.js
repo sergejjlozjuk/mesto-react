@@ -11,16 +11,17 @@ class Api {
   }
   _request(url, options) {
     return fetch(`${this.baseUrl}${url}`, options)
+    .then(this._getResponseData)
   }
   getInitialCards() {
     return this._request('/cards', {
       headers: this.headers,
-    }).then(this._getResponseData)
+    })
   }
   getUserInfo() {
     return this._request('/users/me', {
       headers: this.headers,
-    }).then(this._getResponseData)
+    })
   }
   editAvatar(formValues) {
     return this._request('/users/me/avatar', {
@@ -29,7 +30,7 @@ class Api {
       body: JSON.stringify({
         avatar: formValues.link,
       }),
-    }).then(this._getResponseData)
+    })
   }
   setUserInfo(formValues) {
     return this._request('/users/me', {
@@ -39,7 +40,7 @@ class Api {
         name: formValues.name,
         about: formValues.info,
       }),
-    }).then(this._getResponseData)
+    })
   }
   setCard(formValues) {
     return this._request('/cards', {
@@ -49,25 +50,25 @@ class Api {
         name: formValues.name,
         link: formValues.link,
       }),
-    }).then(this._getResponseData)
+    })
   }
   deleteCard(card) {
     return this._request(`/cards/${card._cardId}`, {
       method: 'DELETE',
       headers: this.headers,
-    }).then(this._getResponseData)
+    })
   }
   setCardLike(card) {
     return this._request(`/cards/${card._cardId}/likes`, {
       method: 'PUT',
       headers: this.headers,
-    }).then(this._getResponseData)
+    })
   }
   deleteCardLike(card) {
     return this._request(`/cards/${card._cardId}/likes`, {
       method: 'DELETE',
       headers: this.headers,
-    }).then(this._getResponseData)
+    })
   }
 }
 

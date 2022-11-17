@@ -41,7 +41,7 @@ export default class Main extends React.Component {
       <main className="main">
         <section className="user">
           <div className="user__profile">
-            <img className="user__image" src={this.state.userAvatar} />
+            <img className="user__image" src={this.state.userAvatar} alt='Аватар'/>
             <div
               className="user__image-overlay"
               onClick={this.handleEditAvatarClick}
