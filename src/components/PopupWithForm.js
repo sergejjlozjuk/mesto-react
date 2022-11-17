@@ -1,13 +1,28 @@
-import React from "react"
+import React from 'react'
 
-export default function PopupWithForm (props) {
-    return (
-        <div className={`popup popup_type_${props.name} ${props.isOpen && 'popup_active'}`} onClick={props.onClose}>
-        <div className="popup__container">
-            <button className="popup__close" type="button"></button>
-            <h2 className="popup__title">{props.title}</h2>
-            {props.children}
-        </div>
-        </div>
-    )
+export default function PopupWithForm({
+  isOpen,
+  name,
+  onClose,
+  title,
+  buttonText,
+  children
+}) {
+  return (
+    <div
+      className={`popup popup_type_${name} ${isOpen && 'popup_active'}`}
+      onClick={onClose}
+    >
+      <div className="popup__container">
+        <button className="popup__close" type="button"></button>
+        <h2 className="popup__title">{title}</h2>
+        <form className="form form_user" name="user-form" noValidate>
+        {children}
+          <button className="form__submit" type="submit">
+            {buttonText}
+          </button>
+        </form>
+      </div>
+    </div>
+  )
 }

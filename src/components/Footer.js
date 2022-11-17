@@ -1,11 +1,9 @@
-import React from "react";
+import React from 'react'
 
-export default class Footer extends React.Component {
-    render () {
-        return(
-            <footer className="footer">
-                <p className="footer__title">&copy; 2020 Mesto Russia</p>
-            </footer>
-        )
-    }
+export default function Footer() {
+  return (
+    <footer className="footer">
+      <p className="footer__title">&copy;{new Date().getFullYear()} Mesto Russia</p>
+    </footer>
+  )
 }

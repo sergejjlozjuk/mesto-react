@@ -1,12 +1,12 @@
-import React from "react";
-import logo from '../images/header_logo.svg';
+import React from 'react'
+import logo from '../images/header_logo.svg'
 
 export default class Header extends React.Component {
-render () {
+  render() {
     return (
-    <header className="header">
+      <header className="header">
         <img className="header__logo" src={logo} alt="Россия" />
-    </header>
+      </header>
     )
-}
+  }
 }
