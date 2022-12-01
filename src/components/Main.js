@@ -1,32 +1,21 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React from 'react'
+import { currentUserContext } from '../contexts/CurrentUserContext'
 import { api } from '../utils/Api'
 import Card from './Card'
 
 export default class Main extends React.Component {
+  static contextType = currentUserContext
   constructor(props) {
     super(props)
     this.handleEditAvatarClick = props.onEditAvatar
     this.handleEditPlaceClick = props.onAddPlace
     this.handleEditProfileClick = props.onEditProfile
     this.state = {
-      userName: '',
-      userAvatar: '',
-      userDescription: '',
       cards: [],
     }
   }
   componentDidMount() {
-    api
-      .getUserInfo()
-      .then((res) => {
-        this.setState({
-          userName: res.name,
-          userAvatar: res.avatar,
-          userDescription: res.about,
-        })
-      })
-      .catch((err) => console.log(err))
     api
       .getInitialCards()
       .then((res) =>
@@ -36,18 +25,47 @@ export default class Main extends React.Component {
       )
       .catch((err) => console.log(err))
   }
+  handleCardLike(card) {
+    const isLiked = card.likes.some(user => user._id === this.context._id)
+    if (isLiked) {
+      api.deleteCardLike(card)
+      .then(newCard => {
+        this.setState({
+          cards: this.state.cards.map(c => {
+            return c._id === card._id ? newCard : c
+          })
+        })
+      })
+    }
+    else {
+      api.setCardLike(card) 
+      .then(newCard => {
+        this.setState({
+          cards: this.state.cards.map(c => {
+            return c._id === card._id ? newCard : c
+          })
+        })
+      })
+    }
+  }
+
+
   render() {
     return (
       <main className="main">
         <section className="user">
           <div className="user__profile">
-            <img className="user__image" src={this.state.userAvatar} alt='Аватар'/>
+            <img
+              className="user__image"
+              src={this.context.avatar}
+              alt="Аватар"
+            />
             <div
               className="user__image-overlay"
               onClick={this.handleEditAvatarClick}
             ></div>
-            <h1 className="user__name">{this.state.userName}</h1>
-            <p className="user__info">{this.state.userDescription}</p>
+            <h1 className="user__name">{this.context.name}</h1>
+            <p className="user__info">{this.context.about}</p>
             <button
               className="user__change-button"
               type="button"
@@ -66,6 +84,7 @@ export default class Main extends React.Component {
               card={card}
               key={card._id}
               onCardClick={this.props.onCardClick}
+              onCardLike={this.handleCardLike.bind(this)}
             />
           ))}
         </section>

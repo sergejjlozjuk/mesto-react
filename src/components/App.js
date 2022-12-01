@@ -1,10 +1,12 @@
 import React from 'react'
 import '../pages/index.css'
+import { api } from '../utils/Api'
 import Footer from './Footer'
 import Header from './Header'
 import ImagePopup from './ImagePopup'
 import Main from './Main'
 import PopupWithForm from './PopupWithForm'
+import { currentUserContext } from '../contexts/CurrentUserContext'
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfile] = React.useState(false)
   const [isAddPlacePopupOpen, setIsAddPlace] = React.useState(false)
@@ -14,6 +16,7 @@ function App() {
     name: '',
     link: '',
   })
+  const [currentUser, setCurrenUser] = React.useState({})
   function handleEditPlaceClick() {
     setIsAddPlace(!isAddPlacePopupOpen)
   }
@@ -49,6 +52,12 @@ function App() {
     isEditProfilePopupOpen ||
     isImagePopupOpen
   React.useEffect(() => {
+    api
+      .getUserInfo()
+      .then((res) => setCurrenUser(res))
+      .catch((err) => console.log(err))
+  })
+  React.useEffect(() => {
     function closeByEscape(evt) {
       if (evt.key === 'Escape') {
         closeAllPopups()
@@ -62,7 +71,7 @@ function App() {
     }
   }, [isOpen])
   return (
-    <>
+    <currentUserContext.Provider value={currentUser}>
       <Header />
       <Main
         onEditAvatar={handleEditAvatarClick}
@@ -71,7 +80,7 @@ function App() {
         onCardClick={handleCardClick}
       />
       <PopupWithForm
-        formName='delete-form'
+        formName="delete-form"
         name="confirm-delete"
         title="Вы уверены?"
         buttonText={'Да'}
@@ -79,7 +88,7 @@ function App() {
       />
       <PopupWithForm
         name="user"
-        formName='user-form'
+        formName="user-form"
         title="Редактировать профиль"
         buttonText={'Сохранить'}
         isOpen={isEditProfilePopupOpen}
@@ -109,7 +118,7 @@ function App() {
         <span className="form__error form__error_type_info"></span>
       </PopupWithForm>
       <PopupWithForm
-        formName='card-form'
+        formName="card-form"
         name="card"
         title="Новое место"
         buttonText={'Создать'}
@@ -138,7 +147,7 @@ function App() {
         <span className="form__error form__error_type_link"></span>
       </PopupWithForm>
       <PopupWithForm
-        formName='avatar-form'
+        formName="avatar-form"
         name="edit-avatar"
         title="Обновить аватар"
         buttonText={'Сохранить'}
@@ -161,7 +170,7 @@ function App() {
         onClose={handleCloseClickOverlay}
       />
       <Footer />
-    </>
+    </currentUserContext.Provider>
   )
 }
 
