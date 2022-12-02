@@ -9,9 +9,10 @@ export default class Card extends React.Component {
     this.onCardLike = this.props.onCardLike
     this.onCardDelete = this.props.onCardDelete
   }
-  handleLikeClick() {
-    this.onCardLike(this.props.card)
-  }
+  // handleLikeClick() {
+  //   console.log(1)
+  //   this.onCardLike(this.props.card)
+  // }
   handleDeleteClick() {
     this.onCardDelete(this.props.card)
   }
@@ -42,7 +43,7 @@ export default class Card extends React.Component {
                 ) && 'place__like_active'
               }`}
               type="button"
-              onClick={this.handleLikeClick.bind(this)}
+              onClick={() =>this.props.onCardLike(this.props.card)}
             ></button>
             <span className="place__like-counter">
               {this.props.card.likes.length}

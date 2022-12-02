@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React from 'react'
 import { currentUserContext } from '../contexts/CurrentUserContext'
-import { api } from '../utils/Api'
 import Card from './Card'
 
 export default class Main extends React.Component {
@@ -11,49 +10,6 @@ export default class Main extends React.Component {
     this.handleEditAvatarClick = props.onEditAvatar
     this.handleEditPlaceClick = props.onAddPlace
     this.handleEditProfileClick = props.onEditProfile
-    this.state = {
-      cards: [],
-    }
-  }
-  componentDidMount() {
-    api
-      .getInitialCards()
-      .then((res) =>
-        this.setState({
-          cards: res,
-        }),
-      )
-      .catch((err) => console.log(err))
-  }
-  setCards(newCard) {
-    this.setState({
-      cards: this.state.cards.map((c) => {
-        return c._id === newCard._id ? newCard : c
-      }),
-    })
-  }
-  handleCardLike(card) {
-    const isLiked = card.likes.some((user) => user._id === this.context._id)
-    if (isLiked) {
-      api.deleteCardLike(card).then((newCard) => {
-        this.setCards(newCard)
-      })
-    } else {
-      api.setCardLike(card).then((newCard) => {
-        this.setCards(newCard)
-      })
-    }
-  }
-  handleCardDelete (card) {
-    api.deleteCard(card)
-    .then(res=> {
-      this.setState({
-        cards: this.state.cards.filter(c => {
-          return c._id !== card._id
-        })
-      })
-    })
-    .catch(err => console.log(err))
   }
   render() {
     return (
@@ -84,13 +40,13 @@ export default class Main extends React.Component {
           </div>
         </section>
         <section className="places">
-          {this.state.cards.map((card) => (
+          {this.props.cards.map((card) => (
             <Card
               card={card}
               key={card._id}
               onCardClick={this.props.onCardClick}
-              onCardLike={this.handleCardLike.bind(this)}
-              onCardDelete={this.handleCardDelete.bind(this)}
+              onCardLike={this.props.handleCardLike.bind(this)}
+              onCardDelete={this.props.handleCardDelete.bind(this)}
             />
           ))}
         </section>

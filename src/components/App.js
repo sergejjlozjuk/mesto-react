@@ -9,6 +9,7 @@ import PopupWithForm from './PopupWithForm'
 import { currentUserContext } from '../contexts/CurrentUserContext'
 import EditProfilePopup from './EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup'
+import AddPlacePopup from './AddPlacePopup'
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfile] = React.useState(false)
   const [isAddPlacePopupOpen, setIsAddPlace] = React.useState(false)
@@ -19,6 +20,7 @@ function App() {
     link: '',
   })
   const [currentUser, setCurrenUser] = React.useState(false)
+  const [cards, setCards] = React.useState([])
   function handleEditPlaceClick() {
     setIsAddPlace(!isAddPlacePopupOpen)
   }
@@ -37,10 +39,6 @@ function App() {
     setIsEditAvatar(false)
     setIsEditProfile(false)
     setIsImage(false)
-    // setSelectedCard({
-    //   name: '',
-    //   link: '',
-    // })
   }
   function handleCloseClickOverlay(e) {
     const elem = e.target.classList
@@ -61,9 +59,54 @@ function App() {
       .catch((err) => console.log(err))
     closeAllPopups()
   }
-  function handleUpdateAvatar (data) {
-    api.editAvatar(data)
-    .then(userData => setCurrenUser(userData))
+  function handleUpdateAvatar(data) {
+    api
+      .editAvatar(data)
+      .then((userData) => setCurrenUser(userData))
+      .catch((err) => console.log(err))
+    closeAllPopups()
+  }
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((user) => user._id === currentUser._id)
+    if (isLiked) {
+      api
+        .deleteCardLike(card)
+        .then((res) => {
+          setCards(
+            cards.map((c) => {
+              return c._id === card._id ? res : c
+            }),
+          )
+        })
+        .catch((err) => console.log(err))
+    } else {
+      api
+        .setCardLike(card)
+        .then((res) => {
+          setCards(
+            cards.map((c) => {
+              return c._id === card._id ? res : c
+            }),
+          )
+        })
+        .catch((err) => console.log(err))
+    }
+  }
+  function handleCardDelete(card) {
+    api
+      .deleteCard(card)
+      .then((res) => {
+        setCards(
+          cards.filter((c) => {
+            return c._id !== card._id
+          }),
+        )
+      })
+      .catch((err) => console.log(err))
+  }
+  function handleAddPlaceSubmit (data) {
+    api.setCard(data)
+    .then(newCard => setCards([newCard, ...cards]))
     .catch(err => console.log(err))
     closeAllPopups()
   }
@@ -72,6 +115,12 @@ function App() {
     isEditAvatarPopupOpen ||
     isEditProfilePopupOpen ||
     isImagePopupOpen
+  React.useEffect(() => {
+    api
+      .getInitialCards()
+      .then((res) => setCards(res))
+      .catch((err) => console.log(err))
+  })
   React.useEffect(() => {
     api
       .getUserInfo()
@@ -99,6 +148,9 @@ function App() {
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleEditPlaceClick}
         onCardClick={handleCardClick}
+        cards={cards}
+        handleCardLike={handleCardLike}
+        handleCardDelete={handleCardDelete}
       />
       <PopupWithForm
         formName="delete-form"
@@ -112,35 +164,11 @@ function App() {
         onClose={handleCloseClickOverlay}
         onUpdateUser={handleUpdateUser}
       ></EditProfilePopup>
-      <PopupWithForm
-        formName="card-form"
-        name="card"
-        title="Новое место"
-        buttonText={'Создать'}
+      <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={handleCloseClickOverlay}
-      >
-        <input
-          id="_type_title"
-          name="name"
-          className="form__input form__input_type_name"
-          placeholder="Название"
-          type="text"
-          minLength="2"
-          maxLength="30"
-          required
-        />
-        <span className="form__error form__error_type_title"></span>
-        <input
-          id="_type_link"
-          name="link"
-          className="form__input form__input_type_info"
-          placeholder="Ссылка на картинку"
-          type="url"
-          required
-        />
-        <span className="form__error form__error_type_link"></span>
-      </PopupWithForm>
+        onAddPlace={handleAddPlaceSubmit}
+      ></AddPlacePopup>
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={handleCloseClickOverlay}
