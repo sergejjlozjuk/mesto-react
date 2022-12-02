@@ -7,6 +7,8 @@ import ImagePopup from './ImagePopup'
 import Main from './Main'
 import PopupWithForm from './PopupWithForm'
 import { currentUserContext } from '../contexts/CurrentUserContext'
+import EditProfilePopup from './EditProfilePopup'
+import EditAvatarPopup from './EditAvatarPopup'
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfile] = React.useState(false)
   const [isAddPlacePopupOpen, setIsAddPlace] = React.useState(false)
@@ -16,7 +18,7 @@ function App() {
     name: '',
     link: '',
   })
-  const [currentUser, setCurrenUser] = React.useState({})
+  const [currentUser, setCurrenUser] = React.useState(false)
   function handleEditPlaceClick() {
     setIsAddPlace(!isAddPlacePopupOpen)
   }
@@ -46,6 +48,25 @@ function App() {
       closeAllPopups()
     }
   }
+  function handleUpdateUser(data) {
+    api
+      .setUserInfo(data)
+      .then((res) =>
+        setCurrenUser({
+          ...currentUser,
+          name: res.name,
+          about: res.about,
+        }),
+      )
+      .catch((err) => console.log(err))
+    closeAllPopups()
+  }
+  function handleUpdateAvatar (data) {
+    api.editAvatar(data)
+    .then(userData => setCurrenUser(userData))
+    .catch(err => console.log(err))
+    closeAllPopups()
+  }
   const isOpen =
     isAddPlacePopupOpen ||
     isEditAvatarPopupOpen ||
@@ -56,7 +77,7 @@ function App() {
       .getUserInfo()
       .then((res) => setCurrenUser(res))
       .catch((err) => console.log(err))
-  })
+  }, [])
   React.useEffect(() => {
     function closeByEscape(evt) {
       if (evt.key === 'Escape') {
@@ -86,37 +107,11 @@ function App() {
         buttonText={'Да'}
         isOpen={false}
       />
-      <PopupWithForm
-        name="user"
-        formName="user-form"
-        title="Редактировать профиль"
-        buttonText={'Сохранить'}
+      <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={handleCloseClickOverlay}
-      >
-        <input
-          id="_type_name"
-          className="form__input form__input_type_name"
-          name="name"
-          type="text"
-          minLength="2"
-          maxLength="40"
-          placeholder="Имя"
-          required
-        />
-        <span className="form__error form__error_type_name"></span>
-        <input
-          id="_type_info"
-          className="form__input form__input_type_info"
-          name="info"
-          type="text"
-          minLength="2"
-          maxLength="200"
-          placeholder="О себе"
-          required
-        />
-        <span className="form__error form__error_type_info"></span>
-      </PopupWithForm>
+        onUpdateUser={handleUpdateUser}
+      ></EditProfilePopup>
       <PopupWithForm
         formName="card-form"
         name="card"
@@ -146,24 +141,11 @@ function App() {
         />
         <span className="form__error form__error_type_link"></span>
       </PopupWithForm>
-      <PopupWithForm
-        formName="avatar-form"
-        name="edit-avatar"
-        title="Обновить аватар"
-        buttonText={'Сохранить'}
+      <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={handleCloseClickOverlay}
-      >
-        <input
-          className="form__input"
-          id="_type_link-avatar"
-          name="link"
-          type="url"
-          placeholder="Ссылка на картинку"
-          required
-        />
-        <span className="form__error form__error_type_link-avatar"></span>
-      </PopupWithForm>
+        onUpdateAvatar={handleUpdateAvatar}
+      ></EditAvatarPopup>
       <ImagePopup
         card={selectedCard}
         isOpen={isImagePopupOpen}

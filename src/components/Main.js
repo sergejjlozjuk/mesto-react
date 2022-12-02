@@ -25,31 +25,36 @@ export default class Main extends React.Component {
       )
       .catch((err) => console.log(err))
   }
+  setCards(newCard) {
+    this.setState({
+      cards: this.state.cards.map((c) => {
+        return c._id === newCard._id ? newCard : c
+      }),
+    })
+  }
   handleCardLike(card) {
-    const isLiked = card.likes.some(user => user._id === this.context._id)
+    const isLiked = card.likes.some((user) => user._id === this.context._id)
     if (isLiked) {
-      api.deleteCardLike(card)
-      .then(newCard => {
-        this.setState({
-          cards: this.state.cards.map(c => {
-            return c._id === card._id ? newCard : c
-          })
-        })
+      api.deleteCardLike(card).then((newCard) => {
+        this.setCards(newCard)
       })
-    }
-    else {
-      api.setCardLike(card) 
-      .then(newCard => {
-        this.setState({
-          cards: this.state.cards.map(c => {
-            return c._id === card._id ? newCard : c
-          })
-        })
+    } else {
+      api.setCardLike(card).then((newCard) => {
+        this.setCards(newCard)
       })
     }
   }
-
-
+  handleCardDelete (card) {
+    api.deleteCard(card)
+    .then(res=> {
+      this.setState({
+        cards: this.state.cards.filter(c => {
+          return c._id !== card._id
+        })
+      })
+    })
+    .catch(err => console.log(err))
+  }
   render() {
     return (
       <main className="main">
@@ -85,6 +90,7 @@ export default class Main extends React.Component {
               key={card._id}
               onCardClick={this.props.onCardClick}
               onCardLike={this.handleCardLike.bind(this)}
+              onCardDelete={this.handleCardDelete.bind(this)}
             />
           ))}
         </section>

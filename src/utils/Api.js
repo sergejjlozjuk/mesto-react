@@ -23,12 +23,12 @@ class Api {
       headers: this.headers,
     })
   }
-  editAvatar(formValues) {
+  editAvatar(link) {
     return this._request('/users/me/avatar', {
       method: 'PATCH',
       headers: this.headers,
       body: JSON.stringify({
-        avatar: formValues.link,
+        avatar: link,
       }),
     })
   }
@@ -38,7 +38,7 @@ class Api {
       headers: this.headers,
       body: JSON.stringify({
         name: formValues.name,
-        about: formValues.info,
+        about: formValues.about,
       }),
     })
   }
@@ -53,7 +53,7 @@ class Api {
     })
   }
   deleteCard(card) {
-    return this._request(`/cards/${card._cardId}`, {
+    return this._request(`/cards/${card._id}`, {
       method: 'DELETE',
       headers: this.headers,
     })

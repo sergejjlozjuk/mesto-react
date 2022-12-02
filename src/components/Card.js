@@ -6,38 +6,46 @@ export default class Card extends React.Component {
   static contextType = currentUserContext
   constructor(props) {
     super(props)
-    this.card = props.card
+    this.onCardLike = this.props.onCardLike
+    this.onCardDelete = this.props.onCardDelete
+  }
+  handleLikeClick() {
+    this.onCardLike(this.props.card)
+  }
+  handleDeleteClick() {
+    this.onCardDelete(this.props.card)
   }
   render() {
     return (
       <article className="place">
         <button
           className={`place__trash ${
-            this.card.owner._id === this.context._id
+            this.props.card.owner._id === this.context._id
               ? ''
               : 'place__trash_inactive'
           }`}
+          onClick={this.handleDeleteClick.bind(this)}
         ></button>
         <img
           className="place__image"
-          src={this.card.link}
-          onClick={() => this.props.onCardClick(this.card)}
-          alt={this.card.name}
+          src={this.props.card.link}
+          onClick={() => this.props.onCardClick(this.props.card)}
+          alt={this.props.card.name}
         />
         <div className="place__info">
-          <h2 className="place__title">{this.card.name}</h2>
+          <h2 className="place__title">{this.props.card.name}</h2>
           <div className="place__like-container">
             <button
               className={`place__like ${
-                this.card.likes.some((user) => user._id === this.context._id)
-                  ? 'place__like_active'
-                  : ''
+                this.props.card.likes.some(
+                  (user) => user._id === this.context._id,
+                ) && 'place__like_active'
               }`}
               type="button"
-              onClick={() => this.props.onCardLike(this.card)}
+              onClick={this.handleLikeClick.bind(this)}
             ></button>
             <span className="place__like-counter">
-              {this.card.likes.length}
+              {this.props.card.likes.length}
             </span>
           </div>
         </div>
