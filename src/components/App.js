@@ -5,22 +5,28 @@ import Footer from './Footer'
 import Header from './Header'
 import ImagePopup from './ImagePopup'
 import Main from './Main'
-import PopupWithForm from './PopupWithForm'
 import { currentUserContext } from '../contexts/CurrentUserContext'
 import EditProfilePopup from './EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup'
 import AddPlacePopup from './AddPlacePopup'
+import ConfirmDeletePopup from './ConfirmDeletePopup'
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfile] = React.useState(false)
   const [isAddPlacePopupOpen, setIsAddPlace] = React.useState(false)
   const [isEditAvatarPopupOpen, setIsEditAvatar] = React.useState(false)
   const [isImagePopupOpen, setIsImage] = React.useState(false)
+  const [isDeletePopupOpen, setIsDelete] = React.useState(false)
+  const [currentUser, setCurrenUser] = React.useState(false)
+  const [cards, setCards] = React.useState([])
+  const [confirmedDeleteCard, setConfirmDeleteCard] = React.useState({})
   const [selectedCard, setSelectedCard] = React.useState({
     name: '',
     link: '',
   })
-  const [currentUser, setCurrenUser] = React.useState(false)
-  const [cards, setCards] = React.useState([])
+  function handleConfirmDelete() {
+    handleCardDelete(confirmedDeleteCard)
+    closeAllPopups()
+  }
   function handleEditPlaceClick() {
     setIsAddPlace(!isAddPlacePopupOpen)
   }
@@ -29,6 +35,10 @@ function App() {
   }
   function handleEditProfileClick() {
     setIsEditProfile(!isEditProfilePopupOpen)
+  }
+  function handleTrashClick(card) {
+    setConfirmDeleteCard(card)
+    setIsDelete(!isDeletePopupOpen)
   }
   function handleCardClick(card) {
     setSelectedCard(card)
@@ -39,6 +49,7 @@ function App() {
     setIsEditAvatar(false)
     setIsEditProfile(false)
     setIsImage(false)
+    setIsDelete(false)
   }
   function handleCloseClickOverlay(e) {
     const elem = e.target.classList
@@ -101,26 +112,29 @@ function App() {
             return c._id !== card._id
           }),
         )
+        console.log(res)
       })
       .catch((err) => console.log(err))
   }
-  function handleAddPlaceSubmit (data) {
-    api.setCard(data)
-    .then(newCard => setCards([newCard, ...cards]))
-    .catch(err => console.log(err))
+  function handleAddPlaceSubmit(data) {
+    api
+      .setCard(data)
+      .then((newCard) => setCards([newCard, ...cards]))
+      .catch((err) => console.log(err))
     closeAllPopups()
   }
   const isOpen =
     isAddPlacePopupOpen ||
     isEditAvatarPopupOpen ||
     isEditProfilePopupOpen ||
-    isImagePopupOpen
+    isImagePopupOpen ||
+    isDeletePopupOpen
   React.useEffect(() => {
     api
       .getInitialCards()
       .then((res) => setCards(res))
       .catch((err) => console.log(err))
-  })
+  }, [])
   React.useEffect(() => {
     api
       .getUserInfo()
@@ -148,17 +162,16 @@ function App() {
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleEditPlaceClick}
         onCardClick={handleCardClick}
+        onTrashClick={handleTrashClick}
         cards={cards}
         handleCardLike={handleCardLike}
         handleCardDelete={handleCardDelete}
       />
-      <PopupWithForm
-        formName="delete-form"
-        name="confirm-delete"
-        title="Вы уверены?"
-        buttonText={'Да'}
-        isOpen={false}
-      />
+      <ConfirmDeletePopup
+        isOpen={isDeletePopupOpen}
+        onClose={handleCloseClickOverlay}
+        onConfirmDelete={handleConfirmDelete}
+      ></ConfirmDeletePopup>
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={handleCloseClickOverlay}

@@ -10,8 +10,7 @@ class Api {
     return Promise.reject(`Ошибка ${res.status}`)
   }
   _request(url, options) {
-    return fetch(`${this.baseUrl}${url}`, options)
-    .then(this._getResponseData)
+    return fetch(`${this.baseUrl}${url}`, options).then(this._getResponseData)
   }
   getInitialCards() {
     return this._request('/cards', {
@@ -42,7 +41,7 @@ class Api {
       }),
     })
   }
-  setCard({title, link}) {
+  setCard({ title, link }) {
     return this._request('/cards', {
       method: 'POST',
       headers: this.headers,

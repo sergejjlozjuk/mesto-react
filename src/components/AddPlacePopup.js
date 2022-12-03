@@ -1,15 +1,15 @@
 import React from 'react'
 import PopupWithForm from './PopupWithForm'
 
-export default function AddPlacePopup({isOpen, onClose, onAddPlace}) {
-    const [title, setTitle] =React.useState()
-    const [link, setLink] = React.useState()
-    
-    function handleSubmit(e) {
-        e.preventDefault()
-        onAddPlace({title, link})
-        e.target.reset()
-    }
+export default function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
+  const [title, setTitle] = React.useState()
+  const [link, setLink] = React.useState()
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    onAddPlace({ title, link })
+    e.target.reset()
+  }
   return (
     <PopupWithForm
       formName="card-form"
@@ -39,7 +39,7 @@ export default function AddPlacePopup({isOpen, onClose, onAddPlace}) {
         placeholder="Ссылка на картинку"
         type="url"
         required
-        onChange={e => setLink(e.target.value)}
+        onChange={(e) => setLink(e.target.value)}
       />
       <span className="form__error form__error_type_link"></span>
     </PopupWithForm>

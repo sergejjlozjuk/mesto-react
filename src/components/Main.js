@@ -47,6 +47,7 @@ export default class Main extends React.Component {
               onCardClick={this.props.onCardClick}
               onCardLike={this.props.handleCardLike.bind(this)}
               onCardDelete={this.props.handleCardDelete.bind(this)}
+              onTrashClick={this.props.onTrashClick}
             />
           ))}
         </section>
