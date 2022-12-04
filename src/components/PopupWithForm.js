@@ -1,4 +1,5 @@
 import React from 'react'
+import FormValidation from './FormValidation'
 
 export default function PopupWithForm({
   isOpen,
@@ -10,6 +11,12 @@ export default function PopupWithForm({
   onSubmit,
   children
 }) {
+  React.useEffect(()=>{
+    if(isOpen) {
+      const validation = new FormValidation()
+      validation.enableValidation(formName, isOpen)
+    }
+  }, [isOpen, formName])
   return (
     <div
       className={`popup popup_type_${name} ${isOpen && 'popup_active'}`}

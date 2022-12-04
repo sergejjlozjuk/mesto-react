@@ -1,24 +1,27 @@
 
 
-export default function FormValidation () {
-    const formList = Array.from(document.forms)
-    formList.forEach(form => {
-        addValidation(form)
-    })
-    function addValidation (form) {
-        const inputList = Array.from(form.getElementsByTagName('input'))
-        inputList.forEach(input => {
-            setListeners(input)
+export default class FormValidation {
+    enableValidation (formName, isOpen) {
+        this.isOpen = isOpen
+        this.form = document.forms[formName]
+        this.inputList = Array.from(this.form.getElementsByTagName('input'))
+        this.submitButton = this.form.querySelector('.form__submit')
+        this.setEventlisteners()
+        this.disabledButton()
+    }
+     setEventlisteners () {
+        this.inputList.forEach(input => {
+            input.addEventListener('input', this.handleInputEvent)
         })
     }
-    function setListeners (input) {
-        input.addEventListener('input', checkValidation)
-    }
-    function checkValidation (e) {
+     handleInputEvent (e) {
         console.log(e.target.validity)
     }
+    checkValid () {
 
-
-
+    }
+    disabledButton (){
+        console.log(this.submitButton)
+    }
 }
 

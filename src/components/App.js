@@ -11,7 +11,6 @@ import EditProfilePopup from './EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup'
 import AddPlacePopup from './AddPlacePopup'
 import ConfirmDeletePopup from './ConfirmDeletePopup'
-import FormValidation from './FormValidation'
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfile] = useState(false)
   const [isAddPlacePopupOpen, setIsAddPlace] = useState(false)
@@ -135,11 +134,6 @@ function App() {
     isEditProfilePopupOpen ||
     isImagePopupOpen ||
     isDeletePopupOpen
-    useEffect(()=>{
-      if(isOpen){
-        FormValidation()
-      }
-    }, [isOpen])
   useEffect(() => {
     api
       .getInitialCards()
