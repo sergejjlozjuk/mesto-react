@@ -12,9 +12,11 @@ export default function PopupWithForm({
   children
 }) {
   React.useEffect(()=>{
+    const validation = new FormValidation()
     if(isOpen) {
-      const validation = new FormValidation()
-      validation.enableValidation(formName, isOpen)
+      validation.enableValidation(formName)
+    } return () =>{
+      validation.disableValidation()
     }
   }, [isOpen, formName])
   return (
